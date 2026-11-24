@@ -1,17 +1,17 @@
 {
-  "name": "q-vis",
+  "name": "quvis",
   "version": "0.0.0",
   "private": true,
   "description": "Visualise how the MTBDD of a pure quantum state evolves, gate by gate, under a unitary circuit.",
   "license": "MIT",
   "author": "Ondřej Lengál",
-  "homepage": "https://quantum.fit.vut.cz/q-vis/",
+  "homepage": "https://quantum.fit.vut.cz/quvis/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QuantumFIT/q-vis.git"
+    "url": "git+https://github.com/QuantumFIT/quvis.git"
   },
   "bugs": {
-    "url": "https://github.com/QuantumFIT/q-vis/issues"
+    "url": "https://github.com/QuantumFIT/quvis/issues"
   },
   "keywords": [
     "quantum",

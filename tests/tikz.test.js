@@ -232,7 +232,7 @@ test('a snippet carries the view it came from, when there is one to carry', () =
   // does not, and the link is pinned to a frozen build so it keeps showing this figure.
   const instance = instantiate(EXAMPLES.find((ex) => ex.name === 'Bell pair'));
   const { circuit, layout, qubitLabels } = laidOut(instance);
-  const link = 'https://quantum.fit.vut.cz/q-vis/v/v14/#c=abc&s=def&i=1';
+  const link = 'https://quantum.fit.vut.cz/quvis/v/v14/#c=abc&s=def&i=1';
 
   for (const tex of [circuitTikz(circuit, { link }),
     diagramTikz(layout, 1, { qubitLabels, link })]) {
@@ -245,7 +245,7 @@ test('a snippet carries the view it came from, when there is one to carry', () =
 
   // A pinned link cannot tell a reader that a newer version exists, so the snippet also
   // carries the current page — both, because neither answers the other's question.
-  const current = 'https://quantum.fit.vut.cz/q-vis/#c=abc&s=def&i=1';
+  const current = 'https://quantum.fit.vut.cz/quvis/#c=abc&s=def&i=1';
   const both = circuitTikz(circuit, { link: { pinned: link, current } });
   assert.ok(both.includes(link), 'the pinned link survives');
   assert.ok(both.includes(current), 'and so does the current one');
@@ -261,7 +261,7 @@ test('a snippet carries the view it came from, when there is one to carry', () =
   // Without one, the snippet simply does not mention it.
   const plain = circuitTikz(circuit);
   assert.ok(!plain.includes('this came from'), 'no empty promise of a link');
-  assert.match(plain, /^% Circuit, from q-vis\.\n%\n/, 'and no blank comment line either');
+  assert.match(plain, /^% Circuit, from quvis\.\n%\n/, 'and no blank comment line either');
 });
 
 // ---- the diagram ---------------------------------------------------------

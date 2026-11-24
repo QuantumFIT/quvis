@@ -1,7 +1,7 @@
 node_modules/
 *.log
 .DS_Store
-/q-vis.html
+/quvis.html
 /aut.html
 /out/
 _site/

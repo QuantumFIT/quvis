@@ -2,7 +2,7 @@
 // Inlines the ES module graph and the stylesheet into one self-contained HTML file.
 //
 // The dev loop has no build step: dev.html loads real modules over http. This script
-// exists only to produce the artefact — a single q-vis.html that works offline
+// exists only to produce the artefact — a single quvis.html that works offline
 // from file://, with no server, no CDN and no dependencies.
 //
 // It is a deliberately tiny bundler, not a general one. It understands exactly the
@@ -113,10 +113,10 @@ export function bundle(entry) {
  * and the file it is written to. They share `src/` and this bundler and nothing else —
  * two separate pages, so neither one's engine can reach into the other's.
  *
- * The keys are the site paths: 'q-vis' is the root, 'aut' is /aut/.
+ * The keys are the site paths: 'quvis' is the root, 'aut' is /aut/.
  */
 export const APPS = {
-  'q-vis': { shell: 'dev.html', entry: 'ui.js', out: 'q-vis.html' },
+  'quvis': { shell: 'dev.html', entry: 'ui.js', out: 'quvis.html' },
   // The shell and the output must not share a name, or building overwrites the source.
   aut: { shell: 'aut-dev.html', entry: 'aut-ui.js', out: 'aut.html' },
 };
@@ -128,7 +128,7 @@ export const APPS = {
  * @param {string} app which of `APPS` to build. Version stays the first argument so that
  *   every existing caller keeps building what it did.
  */
-export function buildHtml(version = 'dev', app = 'q-vis') {
+export function buildHtml(version = 'dev', app = 'quvis') {
   if (!/^(dev|preview|v\d+)$/.test(version)) {
     throw new Error(`version must be 'dev', 'preview' or a release tag like v3, got '${version}'`);
   }
@@ -141,8 +141,8 @@ export function buildHtml(version = 'dev', app = 'q-vis') {
   // `$&`, `$'` and `$\`` are substitution patterns, so any source containing one would be
   // silently spliced. src/tikz.js has `$: '\\$'` in its LaTeX escape table, which is
   // exactly that, and it produced a bundle that parsed in Node and not in a browser.
-  const stamped = html.replace('<meta name="q-vis-version" content="dev">',
-    () => `<meta name="q-vis-version" content="${version}">`);
+  const stamped = html.replace('<meta name="quvis-version" content="dev">',
+    () => `<meta name="quvis-version" content="${version}">`);
   if (stamped === html && version !== 'dev') throw new Error('no version meta tag to stamp');
   html = stamped;
 
@@ -172,7 +172,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // cannot produce one — an old tag has no second app — does not take the other with it.
   const want = process.argv.slice(2).filter((a) => !a.startsWith('-'));
   const names = want.length ? want : Object.keys(APPS);
-  const version = process.env.Q_VIS_VERSION || 'dev';
+  // QUVIS_VERSION since the rename; the old name is still read, as old tags only know it.
+  const version = process.env.QUVIS_VERSION || process.env.Q_VIS_VERSION || 'dev';
   for (const name of names) {
     if (!Object.hasOwn(APPS, name)) throw new Error(`no such app '${name}'`);
     const out = resolve(ROOT, APPS[name].out);

@@ -13,7 +13,7 @@ import { LIMDD } from './limdd.js';
 import { circuitTikz, diagramTikz } from './tikz.js';
 import { tableauFrame, tableauText } from './tableau.js';
 import { circuitStrip, svgEl } from './circuit-view.js';
-import { armDialog, armPanels, refit, showCode, showRich } from './shell.js';
+import { adoptOldStorage, armDialog, armPanels, refit, showCode, showRich } from './shell.js';
 import { codeArea, showError } from './code-area.js';
 import * as Ent from './entangle.js';
 import * as Order from './order.js';
@@ -1589,7 +1589,7 @@ function decodeText(code) {
 let versionSeen = '';
 function version() {
   if (!versionSeen) {
-    versionSeen = document.querySelector('meta[name="q-vis-version"]')?.content || 'dev';
+    versionSeen = document.querySelector('meta[name="quvis-version"]')?.content || 'dev';
   }
   return versionSeen;
 }
@@ -1751,10 +1751,10 @@ async function copyPermalink() {
   setTimeout(() => { button.textContent = 'copy link'; }, 1800);
 }
 
-const STORE = 'q-vis:v1';
-const THEME_STORE = 'q-vis:theme';
-const AMP_STORE = 'q-vis:amplitudes';
-const CIRCUIT_ORDER_STORE = 'q-vis:circuit-order';
+const STORE = 'quvis:v1';
+const THEME_STORE = 'quvis:theme';
+const AMP_STORE = 'quvis:amplitudes';
+const CIRCUIT_ORDER_STORE = 'quvis:circuit-order';
 const THEMES = ['auto', 'light', 'dark'];
 // A symbol rather than the word: the control is a single glyph among other controls, and
 // the word for the current state reads like a label for what clicking will do.
@@ -1833,6 +1833,7 @@ function showVersion() {
 }
 
 export function boot() {
+  adoptOldStorage();
   showVersion();
   new ResizeObserver(fitCanvas).observe($('canvas'));
   $('canvas').addEventListener('scroll', updateSticky, { passive: true });
@@ -1912,7 +1913,7 @@ export function boot() {
   app.areas = { circuit: codeArea($('qasm')), state: codeArea($('stateText')) };
 
   armPanels({
-    store: 'q-vis.layout',
+    store: 'quvis.layout',
     sized: ['panelCircuit', 'panelState', 'circuit'],
     folds: ['panelAmps'],
     onResize: fitCanvas,

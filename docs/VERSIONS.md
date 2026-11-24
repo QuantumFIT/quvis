@@ -11,7 +11,7 @@ points at the frozen copy of the build that made it**, under `/v/<version>/`, an
 page never changes again.
 
 ```
-https://quantum.fit.vut.cz/q-vis/v/v9/#c=…&t=e&n=max
+https://quantum.fit.vut.cz/quvis/v/v9/#c=…&t=e&n=max
                                   ^^^^ the build that wrote this link
 ```
 
@@ -132,7 +132,7 @@ that puts the release script on master; there is no way to preview one first.
 
 ## How a build knows its own version
 
-`tools/build.mjs` stamps `Q_VIS_VERSION` into a meta tag, defaulting to `dev`;
+`tools/build.mjs` stamps `QUVIS_VERSION` (or, for tags from before the rename, `Q_VIS_VERSION`) into a meta tag, defaulting to `dev`;
 `tools/release.mjs` sets it from `git describe --tags --exact-match`, or to `preview` for
 the preview branch. `ui.js` reads the
 tag at run time and decides where a copied link should point — `archiveUrl` and `liveUrl`,

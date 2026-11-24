@@ -36,7 +36,8 @@ const RELEASE = /^v\d+$/;
  * that tag's own build script produced is published, and the rest is quietly absent.
  */
 const PAGES = [
-  { out: 'q-vis.html', base: [], name: '/' },
+  // A tag from before the rename (v30 and older) still writes q-vis.html.
+  { out: ['quvis.html', 'q-vis.html'], base: [], name: '/' },
   { out: 'aut.html', base: ['aut'], name: '/aut/' },
 ];
 
@@ -72,6 +73,8 @@ function headVersion() {
 
 /** Copy one built file into the site, if the build actually produced it. */
 function place(from, into) {
+  // A page may have had more than one name over its life; the first one built wins.
+  if (Array.isArray(from)) return from.some((f) => place(f, into));
   if (!existsSync(from)) return false;
   mkdirSync(dirname(into), { recursive: true });
   cpSync(from, into);
@@ -85,10 +88,10 @@ function place(from, into) {
  */
 function build(version, at) {
   execFileSync('node', [join(ROOT, 'tools', 'build.mjs')],
-    { cwd: ROOT, env: { ...process.env, Q_VIS_VERSION: version }, stdio: 'pipe' });
+    { cwd: ROOT, env: { ...process.env, QUVIS_VERSION: version, Q_VIS_VERSION: version }, stdio: 'pipe' });
   const made = [];
   for (const page of PAGES) {
-    if (place(join(ROOT, page.out), site(page.base, at, 'index.html'))) made.push(page);
+    if (place([page.out].flat().map((o) => join(ROOT, o)), site(page.base, at, 'index.html'))) made.push(page);
   }
   return made;
 }
@@ -99,11 +102,11 @@ function build(version, at) {
  * whatever it likes.
  */
 function buildRef(ref, version, at) {
-  const work = mkdtempSync(join(tmpdir(), `q-vis-${version}-`));
+  const work = mkdtempSync(join(tmpdir(), `quvis-${version}-`));
   try {
     execSync(`git archive ${ref} | tar -x -C ${JSON.stringify(work)}`, { cwd: ROOT });
     const run = (stamp) => execFileSync('node', [join(work, 'tools', 'build.mjs')],
-      { cwd: work, env: { ...process.env, Q_VIS_VERSION: stamp }, stdio: 'pipe' });
+      { cwd: work, env: { ...process.env, QUVIS_VERSION: stamp, Q_VIS_VERSION: stamp }, stdio: 'pipe' });
     try {
       run(version);
     } catch (e) {
@@ -114,7 +117,7 @@ function buildRef(ref, version, at) {
     }
     const made = [];
     for (const page of PAGES) {
-      if (place(join(work, page.out), site(page.base, at, 'index.html'))) made.push(page);
+      if (place([page.out].flat().map((o) => join(work, o)), site(page.base, at, 'index.html'))) made.push(page);
     }
     if (!made.length) throw new Error(`${ref} produced no page`);
     return made;
@@ -226,13 +229,13 @@ if (draft) {
 for (const page of PAGES) {
   const mine = archived.get(page.name);
   if (!mine.length) continue;
-  const title = page.base.length ? `q-vis/${page.base.join('/')}` : 'q-vis';
+  const title = page.base.length ? `quvis/${page.base.join('/')}` : 'quvis';
   writeFileSync(site(page.base, ['v'], 'index.html'),
     indexPage(mine, current, previewed.has(page.name), title));
   console.log(`${`${page.name}v/`.padEnd(12)} index of ${mine.length} version${mine.length === 1 ? '' : 's'}`);
 }
 
-// build.mjs always writes q-vis.html in the working tree, so a tagged run leaves a
+// build.mjs always writes quvis.html in the working tree, so a tagged run leaves a
 // stamped copy behind. Put an unstamped one back, or a later local build would inherit a
 // version it has no right to.
 if (current !== 'dev') {

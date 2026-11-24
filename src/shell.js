@@ -13,9 +13,26 @@ const COL_MIN = 220;
 const PANEL_MIN = 64;
 
 /** Set by `armPanels`; the page's own answers to the questions above. */
-let page = { store: 'q-vis.layout', sized: [], folds: [], onResize: () => {} };
+let page = { store: 'quvis.layout', sized: [], folds: [], onResize: () => {} };
 
 const $ = (id) => document.getElementById(id);
+
+/**
+ * The page was called q-vis until v31, and its storage keys with it. Copy whatever this
+ * browser kept under the old names across once, so the rename does not cost anyone their
+ * circuit, theme or layout. The old keys are left alone: an archived build still reads
+ * them.
+ */
+export function adoptOldStorage() {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith('q-vis')) continue;
+      const renamed = `quvis${key.slice('q-vis'.length)}`;
+      if (localStorage.getItem(renamed) === null) localStorage.setItem(renamed, localStorage.getItem(key));
+    }
+  } catch { /* storage may be unavailable */ }
+}
 
 /**
  * The panel column's width, and the heights of the panels stacked in it.

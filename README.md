@@ -1,11 +1,11 @@
-# q-vis
+# quvis
 
 Watch the **MTBDD** of a pure quantum state change, gate by gate, as a unitary circuit is
 applied to it.
 
-[![CI](https://github.com/QuantumFIT/q-vis/actions/workflows/ci.yml/badge.svg)](https://github.com/QuantumFIT/q-vis/actions/workflows/ci.yml)
+[![CI](https://github.com/QuantumFIT/quvis/actions/workflows/ci.yml/badge.svg)](https://github.com/QuantumFIT/quvis/actions/workflows/ci.yml)
 
-**[Try it →](https://quantum.fit.vut.cz/q-vis/)** — or download the single HTML file and
+**[Try it →](https://quantum.fit.vut.cz/quvis/)** — or download the single HTML file and
 open it offline. No install, no server, no dependencies.
 
 ![The 3-qubit QFT mid-circuit: the diagram, the circuit as a score strip, and the exact amplitudes](docs/screenshot.png)
@@ -255,11 +255,11 @@ diagram computes these groups anyway, to choose its edge labels; the button is w
 can read them. A node whose rank matches the number of qubits below it is a stabilizer
 state, which is why the diagram is a tower there. See `docs/LIMDD.md`.
 
-A copied link points at a frozen copy of the version that made it — `…/q-vis/v/v10/#…` —
+A copied link points at a frozen copy of the version that made it — `…/quvis/v/v10/#…` —
 so it keeps showing what it showed even after the settings it encodes change meaning. An
 exported snippet carries both that link and the current page, since a pinned link cannot
 tell a reader that a newer version exists.
-Every release is kept at [`/v/`](https://quantum.fit.vut.cz/q-vis/v/), and the archived
+Every release is kept at [`/v/`](https://quantum.fit.vut.cz/quvis/v/), and the archived
 page links back to the current one. `docs/VERSIONS.md` says how that is built, and how to
 cut a release.
 
@@ -277,7 +277,7 @@ directly, so a change is one reload away.
 ```sh
 python3 -m http.server 8000    # then open http://localhost:8000/dev.html
 node --test tests/*.test.js    # 81 tests, no node_modules
-node tools/build.mjs           # -> q-vis.html, one self-contained file
+node tools/build.mjs           # -> quvis.html, one self-contained file
 ```
 
 Developed on Node 24. Nothing in the project needs more than Node 18, but pass the test

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { archiveUrl, liveUrl, viewCode, viewFromCode } from '../src/ui.js';
 import { buildHtml } from '../tools/build.mjs';
 
-const SITE = 'https://quantum.fit.vut.cz/q-vis/';
+const SITE = 'https://quantum.fit.vut.cz/quvis/';
 
 test('a copied link points at the frozen copy of the build that made it', () => {
   assert.equal(archiveUrl(SITE, 'v10'), `${SITE}v/v10/`);
@@ -14,7 +14,7 @@ test('a copied link points at the frozen copy of the build that made it', () => 
 
 test('there is nothing to pin to when nothing was archived', () => {
   assert.equal(archiveUrl(SITE, 'dev'), null, 'an unreleased build has no frozen copy');
-  assert.equal(archiveUrl('file:///home/someone/q-vis.html', 'v10'), null,
+  assert.equal(archiveUrl('file:///home/someone/quvis.html', 'v10'), null,
     'a downloaded page has no site to point at');
   assert.equal(archiveUrl('not a url', 'v10'), null);
   assert.equal(archiveUrl(`${SITE}v/v10/`, 'v10'), null,
@@ -40,7 +40,7 @@ test('a preview is not something a link can be pinned to', () => {
 });
 
 test('the build stamps the version it was told, and refuses nonsense', () => {
-  const stamp = (v) => buildHtml(v).html.match(/name="q-vis-version" content="([^"]*)"/)[1];
+  const stamp = (v) => buildHtml(v).html.match(/name="quvis-version" content="([^"]*)"/)[1];
   assert.equal(stamp('v3'), 'v3');
   assert.equal(stamp('preview'), 'preview');
   assert.equal(stamp(), 'dev', 'an ordinary build is not a release');

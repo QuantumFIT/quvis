@@ -178,12 +178,12 @@ test('a figure says which of the two automata it is, and carries only the styles
   };
 
   const painted = forModel(true);
-  assert.match(painted, /% Level-synchronized tree automaton, from q-vis\./);
+  assert.match(painted, /% Level-synchronized tree automaton, from quvis\./);
   assert.match(painted, /choice0\/\.style=/, 'the hues it puts on the arcs');
   assert.match(painted, /\\fill\[choice\d\]/, 'and dots that use them');
 
   const plain = forModel(false);
-  assert.match(plain, /% Tree automaton, from q-vis\./);
+  assert.match(plain, /% Tree automaton, from quvis\./);
   assert.ok(!/Level-synchronized/.test(plain), 'which it is not');
   assert.ok(!/choice/.test(plain), 'no colours, so no dots and no styles for them');
   assert.match(plain, /\\draw\[trans\]/, 'but the arcs that pair up a transition are still there');

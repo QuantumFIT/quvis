@@ -162,7 +162,7 @@ function linkLines(link) {
 }
 
 const header = (what, packages, { classOptions = 'border=4pt', link } = {}) => [
-  `% ${what}, from q-vis.`,
+  `% ${what}, from quvis.`,
   ...linkLines(link),
   '%',
   `% Needs \\usepackage{${packages}} in the preamble.`,

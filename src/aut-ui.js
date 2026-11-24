@@ -14,7 +14,7 @@
 
 import { parseQasm, QasmError } from './qasm.js';
 import { circuitStrip, svgEl } from './circuit-view.js';
-import { armDialog, armPanels, refit, showCode } from './shell.js';
+import { adoptOldStorage, armDialog, armPanels, refit, showCode } from './shell.js';
 import { codeArea, showError } from './code-area.js';
 import { EXAMPLES, SPECIALS, instantiate, identify } from './aut-examples.js';
 import { HslError, parseHsl, toVector } from './aut-hsl.js';
@@ -26,8 +26,8 @@ import * as P from './poly.js';
 
 const $ = (id) => document.getElementById(id);
 
-const THEME_STORE = 'q-vis:theme';       // shared with the other page: one choice, both apps
-const STORE = 'q-vis:aut';               // its own text, though — different second box
+const THEME_STORE = 'quvis:theme';       // shared with the other page: one choice, both apps
+const STORE = 'quvis:aut';               // its own text, though — different second box
 const THEMES = ['auto', 'light', 'dark'];
 const THEME_GLYPH = { auto: '◐', light: '☀', dark: '☾' };
 
@@ -240,7 +240,7 @@ function applyTheme(name) {
 
 /** The tag this page was built from, or 'dev' when it was not built by a release. */
 export function version() {
-  return document.querySelector('meta[name="q-vis-version"]')?.content || 'dev';
+  return document.querySelector('meta[name="quvis-version"]')?.content || 'dev';
 }
 
 function showVersion() {
@@ -913,6 +913,7 @@ function load() {
 }
 
 export function boot() {
+  adoptOldStorage();
   let stored = null;
   try { stored = localStorage.getItem(THEME_STORE); } catch { /* storage may be unavailable */ }
   applyTheme(THEMES.includes(stored) ? stored : 'auto');
@@ -1003,7 +1004,7 @@ export function boot() {
   app.areas = { circuit: codeArea($('qasm')), spec: codeArea($('specText')) };
 
   armPanels({
-    store: 'q-vis:aut.layout',
+    store: 'quvis:aut.layout',
     sized: ['panelCircuit', 'panelSpec', 'circuit'],
     onResize: fitCanvas,
   });
