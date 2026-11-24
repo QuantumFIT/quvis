@@ -16,14 +16,14 @@
  */
 export function codeArea(textarea) {
   const box = document.createElement('div');
-  box.className = 'code';
+  box.className = 'source';
   const gutter = document.createElement('div');
-  gutter.className = 'code-lines';
+  gutter.className = 'source-lines';
   gutter.setAttribute('aria-hidden', 'true');
   const numbers = document.createElement('div');
   gutter.append(numbers);
   const band = document.createElement('div');
-  band.className = 'code-band';
+  band.className = 'source-band';
   band.hidden = true;
   textarea.replaceWith(box);
   box.append(gutter, band, textarea);

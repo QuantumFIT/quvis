@@ -25,10 +25,11 @@
   --rule-soft: #cad6dd;
   --accent: #a1155b;
   --accent-soft: #fbdcea;
+  --bad: #c0392b;
   --backdrop: rgba(11, 22, 32, 0.4);
 
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --serif: "Latin Modern Roman", "CMU Serif", ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 
   --gap: 8px;
@@ -49,6 +50,7 @@
     --rule-soft: #3d5361;
     --accent: #ffa6ce;
     --accent-soft: #5c2b3f;
+    --bad: #ff8a7a;
     --backdrop: rgba(0, 0, 0, 0.55);
   }
 }
@@ -64,6 +66,7 @@
     --rule-soft: #3d5361;
     --accent: #ffa6ce;
     --accent-soft: #5c2b3f;
+    --bad: #ff8a7a;
     --backdrop: rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
@@ -103,16 +106,19 @@ body {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  padding: 2px 4px 6px;
-  border-bottom: 1px solid var(--rule);
+  padding: 4px 2px 2px;
 }
 
+/* Two-tone, as quedit's: the shared "qu" in ink and the part that says which tool in the
+   accent, so the pair reads as a family. */
 .wordmark {
-  font: 500 19px/1 var(--serif);
+  font: 600 22px/1 var(--serif);
   letter-spacing: -0.01em;
 }
 
-.wordmark span { color: var(--ink-faint); }
+.wordmark span { color: var(--accent); }
+.wordmark .sub { color: var(--ink-faint); font-weight: 500; }
+.ghlink { color: var(--ink-soft); font-size: 12px; }
 
 /* The build this page was made from. Silent on an unreleased build; on an archived one
    it is the way back to the current version, so there it is a link and says so. */
@@ -131,7 +137,7 @@ a.version[href]:hover { text-decoration: underline; }
 
 .tagline {
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .masthead .spacer { flex: 1; }
@@ -254,7 +260,8 @@ body.dragging * { cursor: inherit !important; }
 .panel {
   background: var(--panel);
   border: 1px solid var(--rule-soft);
-  border-radius: 2px;
+  border-radius: 10px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -358,10 +365,15 @@ select, button, a.button {
   color: var(--ink);
   background: var(--plate);
   border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 3px 7px;
+  border-radius: 6px;
+  padding: 4px 10px;
+  min-height: 28px;
   cursor: pointer;
 }
+button, a.button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+/* The one action a page is most often visited for, filled, as in quedit. */
+button.primary { background: var(--ink); color: var(--plate); border-color: var(--ink); }
+button.primary:hover:not(:disabled) { border-color: var(--ink); opacity: 0.88; }
 
 select { font-size: 12px; max-width: 100%; }
 /* A flex item will not shrink below its content unless told it may. Without this the
@@ -380,7 +392,7 @@ select { font-size: 12px; max-width: 100%; }
 #size { flex: 0 0 auto; }
 
 button:hover:not(:disabled), select:hover, a.button:hover { border-color: var(--ink-soft); }
-button:disabled { color: var(--ink-faint); cursor: default; }
+button:disabled { opacity: 0.45; cursor: default; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
@@ -401,8 +413,8 @@ button:disabled { color: var(--ink-faint); cursor: default; }
   margin: 0;
   padding: 6px 10px 7px 8px;
   border-top: 1px solid var(--rule-soft);
-  border-left: 2px solid var(--accent);
-  color: var(--accent);
+  border-left: 2px solid var(--bad);
+  color: var(--bad);
   font: 11.5px/1.45 var(--mono);
   white-space: pre-wrap;
   flex: 0 1 auto;
@@ -435,7 +447,8 @@ button:disabled { color: var(--ink-faint); cursor: default; }
   grid-area: plate;
   background: var(--plate);
   border: 1px solid var(--rule-soft);
-  border-radius: 2px;
+  border-radius: 10px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -896,21 +909,17 @@ dialog > header .spacer { flex: 1; }
      a little height — a row that is clipped costs the reader a control. */
   flex-wrap: wrap;
   gap: 6px 10px;
-  padding: 6px 8px;
-  border-top: 1px solid var(--rule);
+  padding: 2px 2px 0;
 }
 
 /* A floor as well as a width, because what is inside these varies: a chevron at 15px, a
    ▶ set smaller because most fonts draw it large, a drawn glyph 12px square. Without it
    the row steps up and down in the middle of itself according to which mark each button
    happens to hold. */
-.transport button {
-  min-width: 32px;
-  min-height: 25px;
-  text-align: center;
-  font-size: 15px;
-  line-height: 1.1;
-}
+.transport button { min-width: 32px; }
+/* Only the step buttons, which hold a glyph: the rest are words, at the size of every
+   other button on the page. */
+.transport .steps button { font-size: 15px; line-height: 1.1; padding: 0 8px; }
 
 /* The jump-to-either-end glyphs, drawn rather than typed. The characters for them —
    U+23EE and U+23ED — are missing from most of the fonts in this page's stack and arrive
@@ -926,7 +935,7 @@ dialog > header .spacer { flex: 1; }
   margin: 0 auto;
   fill: currentColor;
 }
-.transport button#play { font-size: 12px; }
+.transport .steps button#play { font-size: 12px; }
 .transport .spacer { flex: 1; }
 
 .stat {
@@ -1075,15 +1084,15 @@ dialog > header .spacer { flex: 1; }
  * Line numbers down the side, and a band across the line an error names; see
  * code-area.js. The gutter takes the textarea's font and line height, so a number and its
  * line cannot drift apart. */
-.code {
+.source {
   position: relative;
   display: flex;
   flex: 1;
   min-height: 0;
   overflow: hidden;
 }
-.code > textarea { white-space: pre; overflow: auto; position: relative; z-index: 1; }
-.code-lines {
+.source > textarea { white-space: pre; overflow: auto; position: relative; z-index: 1; }
+.source-lines {
   flex: 0 0 auto;
   min-width: 2.6em;
   padding: 8px 6px 8px 0;
@@ -1095,14 +1104,21 @@ dialog > header .spacer { flex: 1; }
   border-right: 1px solid var(--rule-soft);
   user-select: none;
 }
-.code-lines .bad { color: var(--accent); opacity: 1; font-weight: 600; }
-.code-band {
+.source-lines .bad { color: var(--bad); opacity: 1; font-weight: 600; }
+.source-band {
   position: absolute;
   left: 0;
   right: 0;
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
-  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  border-left: 2px solid var(--bad);
   pointer-events: none;
   z-index: 2;
 }
 .error-line { color: inherit; font-weight: 600; }
+.steps { display: inline-flex; gap: 4px; }
+/* A panel header holds its title and up to three controls in a 340px column; at the
+   page's own button size the title is what gives way, so these are a size smaller. */
+.panel > header button, .panel > header a.button, .panel > header select {
+  padding: 2px 8px;
+  min-height: 25px;
+}
