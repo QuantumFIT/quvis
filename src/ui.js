@@ -14,6 +14,7 @@ import { circuitTikz, diagramTikz } from './tikz.js';
 import { tableauFrame, tableauText } from './tableau.js';
 import { circuitStrip, svgEl } from './circuit-view.js';
 import { armDialog, armPanels, refit, showCode, showRich } from './shell.js';
+import { codeArea, showError } from './code-area.js';
 import * as Ent from './entangle.js';
 import * as Order from './order.js';
 import * as Pauli from './pauli.js';
@@ -62,6 +63,7 @@ const app = {
   levelOf: [],            // its inverse: where each qubit sits
   theme: 'auto',
   ampFormat: 'exact',
+  areas: {},              // the source boxes, which an error can point into
   circuitFollows: true,   // the circuit's wires drawn in the diagram's order
   zoom: 'fit',
   scale: 1,
@@ -203,7 +205,7 @@ function compile() {
   }
   app.index = Math.min(app.index, frames.length - 1);
 
-  $('error').textContent = '';
+  clearError();
   app.zoom = 'fit';
   // One unknown per basis state, so it is only offered while that is a sane number.
   const tooMany = 2 ** circuit.nqubits > 256;
@@ -360,7 +362,16 @@ function sift() {
 
 function fail(e, where) {
   stop();
-  $('error').textContent = `${where === 'state' ? 'input state' : 'circuit'} — ${e.message}`;
+  // The line goes on the box the text came from; the other box is cleared, since an
+  // error in one says nothing about the other.
+  const area = app.areas[where] ?? null;
+  for (const a of Object.values(app.areas)) if (a !== area) a.mark(null);
+  showError($('error'), where === 'state' ? 'input state' : where, e, area);
+}
+
+function clearError() {
+  $('error').textContent = '';
+  for (const a of Object.values(app.areas)) a.mark(null);
 }
 
 // ---- the circuit -------------------------------------------------------
@@ -1897,6 +1908,8 @@ export function boot() {
     showOrder();
   });
   $('sift').addEventListener('click', sift);
+
+  app.areas = { circuit: codeArea($('qasm')), state: codeArea($('stateText')) };
 
   armPanels({
     store: 'q-vis.layout',

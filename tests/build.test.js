@@ -9,7 +9,7 @@ test('the bundle evaluates and the engine still works inside it', () => {
   const registry = new Function(`${code}\nreturn __m;`)();
 
   assert.deepEqual([...modules].sort(),
-    ['circuit-view.js', 'dd.js', 'entangle.js', 'evdd.js', 'examples.js', 'gates.js', 'layout.js',
+    ['circuit-view.js', 'code-area.js', 'dd.js', 'entangle.js', 'evdd.js', 'examples.js', 'gates.js', 'layout.js',
       'limdd.js', 'order.js',
       'pauli.js', 'stabilizer.js',
       'poly.js', 'qasm.js', 'random.js', 'shell.js', 'sim.js', 'stable-order.js', 'state.js',

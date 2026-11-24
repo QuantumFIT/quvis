@@ -15,6 +15,7 @@
 import { parseQasm, QasmError } from './qasm.js';
 import { circuitStrip, svgEl } from './circuit-view.js';
 import { armDialog, armPanels, refit, showCode } from './shell.js';
+import { codeArea, showError } from './code-area.js';
 import { EXAMPLES, SPECIALS, instantiate, identify } from './aut-examples.js';
 import { HslError, parseHsl, toVector } from './aut-hsl.js';
 import { simulate } from './aut-gates.js';
@@ -53,6 +54,7 @@ const ZOOM_RANGE = [MIN_FIT_SCALE, 8];
 const ZOOM_STEP = 1.25;
 
 const app = {
+  areas: {},              // the source boxes, which an error can point into
   circuit: null,
   index: 0,
   columns: [],
@@ -359,12 +361,14 @@ function compile() {
     app.circuit = null;
     app.columns = [];
     $('circuit').replaceChildren();
-    $('error').textContent = `circuit — ${e.message}`;
+    app.areas.spec?.mark(null);
+    showError($('error'), 'circuit', e, app.areas.circuit);
     $('stats').textContent = '';
     setStep(app.index);
     return;
   }
   $('error').textContent = '';
+  app.areas.circuit?.mark(null);
   // Back to fit on every recompile, as the other page does: the automaton a new
   // specification denotes can be a different size entirely, and holding a zoom chosen
   // for the old one would leave the new one half off the plate.
@@ -732,6 +736,7 @@ function showAutomaton() {
   const n = app.circuit.nqubits;
   try {
     const spec = parseHsl($('specText').value, n);
+    app.areas.spec?.mark(null);
     // The one place the choice of model is made. Everything downstream reads it off the
     // automaton: how a gate is applied, whether the merge has colours to protect, and
     // whether the picture has any dots to draw.
@@ -758,7 +763,7 @@ function showAutomaton() {
     app.layouts = [];
     app.constraints = [];
     if (e instanceof HslError) {
-      $('error').textContent = `specification — ${e.message}`;
+      showError($('error'), 'specification', e, app.areas.spec);
     } else {
       // Everything the engine refuses on purpose — a gate it cannot apply, a run that
       // outgrew its budget — arrives here as a plain Error and is shown. So would a
@@ -994,6 +999,8 @@ export function boot() {
   $('tikzAutomaton').addEventListener('click', () => showTikz('automaton'));
   $('tikzCircuit').addEventListener('click', () => showTikz('circuit'));
   armDialog();
+
+  app.areas = { circuit: codeArea($('qasm')), spec: codeArea($('specText')) };
 
   armPanels({
     store: 'q-vis:aut.layout',
