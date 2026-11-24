@@ -179,6 +179,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const out = resolve(ROOT, APPS[name].out);
     const { html, modules } = buildHtml(version, name);
     writeFileSync(out, html);
+    // A release script from before the rename sets only the old variable, and looks for
+    // the old file. That is master's script while a branch with the rename is previewed,
+    // so it is given the file it expects, or the preview would have no front page.
+    if (name === 'quvis' && process.env.Q_VIS_VERSION && !process.env.QUVIS_VERSION) {
+      writeFileSync(resolve(ROOT, 'q-vis.html'), html);
+    }
     const kb = (Buffer.byteLength(html) / 1024).toFixed(1);
     console.log(`${out}  ${version}  ${kb} kB  (${modules.length} modules: ${modules.join(' ')})`);
   }
